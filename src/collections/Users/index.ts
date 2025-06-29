@@ -21,6 +21,29 @@ export const Users: CollectionConfig = {
       name: 'name',
       type: 'text',
     },
+    {
+      name: 'role',
+      type: 'select',
+      options: [
+        {
+          label: 'Admin',
+          value: 'admin',
+        },
+        {
+          label: 'Editor',
+          value: 'editor',
+        },
+        {
+          label: 'Previewer',
+          value: 'previewer',
+        },
+      ],
+      defaultValue: 'editor',
+      required: true,
+      admin: {
+        description: 'User role determines access level',
+      },
+    },
   ],
   timestamps: true,
 }

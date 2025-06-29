@@ -13,9 +13,15 @@ import { Posts } from './collections/Posts'
 import { Users } from './collections/Users'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
+import { Hero } from './globals/Hero/config'
+import { Features } from './globals/Features/config'
+import { Testimonials } from './globals/Testimonials/config'
+import { Pricing } from './globals/Pricing/config'
+import { FAQ } from './globals/FAQ/config'
 import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
+// import { s3Config } from './s3.config'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -64,10 +70,10 @@ export default buildConfig({
   }),
   collections: [Pages, Posts, Media, Categories, Users],
   cors: [getServerSideURL()].filter(Boolean),
-  globals: [Header, Footer],
+  globals: [Header, Footer, Hero, Features, Testimonials, Pricing, FAQ],
   plugins: [
     ...plugins,
-    // storage-adapter-placeholder
+    // s3Config,
   ],
   secret: process.env.PAYLOAD_SECRET,
   sharp,

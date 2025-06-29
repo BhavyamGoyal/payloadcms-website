@@ -103,10 +103,20 @@ export interface Config {
   globals: {
     header: Header;
     footer: Footer;
+    hero: Hero;
+    features: Feature;
+    testimonials: Testimonial;
+    pricing: Pricing;
+    faq: Faq;
   };
   globalsSelect: {
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
+    hero: HeroSelect<false> | HeroSelect<true>;
+    features: FeaturesSelect<false> | FeaturesSelect<true>;
+    testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
+    pricing: PricingSelect<false> | PricingSelect<true>;
+    faq: FaqSelect<false> | FaqSelect<true>;
   };
   locale: null;
   user: User & {
@@ -374,6 +384,10 @@ export interface Category {
 export interface User {
   id: string;
   name?: string | null;
+  /**
+   * User role determines access level
+   */
+  role: 'admin' | 'editor' | 'previewer';
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -383,6 +397,13 @@ export interface User {
   hash?: string | null;
   loginAttempts?: number | null;
   lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
   password?: string | null;
 }
 /**
@@ -1267,6 +1288,7 @@ export interface CategoriesSelect<T extends boolean = true> {
  */
 export interface UsersSelect<T extends boolean = true> {
   name?: T;
+  role?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -1276,6 +1298,13 @@ export interface UsersSelect<T extends boolean = true> {
   hash?: T;
   loginAttempts?: T;
   lockUntil?: T;
+  sessions?:
+    | T
+    | {
+        id?: T;
+        createdAt?: T;
+        expiresAt?: T;
+      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1592,6 +1621,221 @@ export interface Footer {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "hero".
+ */
+export interface Hero {
+  id: string;
+  /**
+   * Main hero title text
+   */
+  title: string;
+  /**
+   * Hero subtitle/description text
+   */
+  subtitle: string;
+  primaryButton: {
+    text: string;
+    url: string;
+  };
+  secondaryButton?: {
+    text?: string | null;
+    url?: string | null;
+  };
+  /**
+   * Hero section image
+   */
+  heroImage?: (string | null) | Media;
+  /**
+   * Hero background image (optional)
+   */
+  backgroundImage?: (string | null) | Media;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "features".
+ */
+export interface Feature {
+  id: string;
+  /**
+   * Features section title
+   */
+  title: string;
+  /**
+   * Features section subtitle/description
+   */
+  subtitle?: string | null;
+  features?:
+    | {
+        title: string;
+        description: string;
+        /**
+         * Feature icon/image
+         */
+        icon?: (string | null) | Media;
+        /**
+         * Lucide icon name (alternative to uploaded icon)
+         */
+        iconName?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "testimonials".
+ */
+export interface Testimonial {
+  id: string;
+  /**
+   * Testimonials section title
+   */
+  title: string;
+  /**
+   * Testimonials section subtitle/description
+   */
+  subtitle?: string | null;
+  testimonials?:
+    | {
+        /**
+         * Customer name
+         */
+        name: string;
+        /**
+         * Customer position/title
+         */
+        position?: string | null;
+        /**
+         * Customer company
+         */
+        company?: string | null;
+        /**
+         * Testimonial text
+         */
+        testimonial: string;
+        /**
+         * Customer avatar/photo
+         */
+        avatar?: (string | null) | Media;
+        /**
+         * Star rating (1-5)
+         */
+        rating?: number | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pricing".
+ */
+export interface Pricing {
+  id: string;
+  /**
+   * Pricing section title
+   */
+  title: string;
+  /**
+   * Pricing section subtitle/description
+   */
+  subtitle?: string | null;
+  plans?:
+    | {
+        /**
+         * Plan name (e.g., "Basic", "Pro", "Enterprise")
+         */
+        name: string;
+        /**
+         * Plan price (e.g., "$9", "$29", "Contact Us")
+         */
+        price: string;
+        /**
+         * Billing period (e.g., "/month", "/year")
+         */
+        period?: string | null;
+        /**
+         * Plan description
+         */
+        description?: string | null;
+        features?:
+          | {
+              feature: string;
+              /**
+               * Is this feature included in the plan?
+               */
+              included?: boolean | null;
+              id?: string | null;
+            }[]
+          | null;
+        /**
+         * Call-to-action button text
+         */
+        buttonText?: string | null;
+        /**
+         * Call-to-action button URL
+         */
+        buttonUrl?: string | null;
+        /**
+         * Highlight this plan as featured/popular
+         */
+        featured?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "faq".
+ */
+export interface Faq {
+  id: string;
+  /**
+   * FAQ section title
+   */
+  title: string;
+  /**
+   * FAQ section subtitle/description
+   */
+  subtitle?: string | null;
+  faqs?:
+    | {
+        /**
+         * FAQ question
+         */
+        question: string;
+        /**
+         * FAQ answer (supports rich text formatting)
+         */
+        answer: {
+          root: {
+            type: string;
+            children: {
+              type: string;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header_select".
  */
 export interface HeaderSelect<T extends boolean = true> {
@@ -1630,6 +1874,121 @@ export interface FooterSelect<T extends boolean = true> {
               url?: T;
               label?: T;
             };
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "hero_select".
+ */
+export interface HeroSelect<T extends boolean = true> {
+  title?: T;
+  subtitle?: T;
+  primaryButton?:
+    | T
+    | {
+        text?: T;
+        url?: T;
+      };
+  secondaryButton?:
+    | T
+    | {
+        text?: T;
+        url?: T;
+      };
+  heroImage?: T;
+  backgroundImage?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "features_select".
+ */
+export interface FeaturesSelect<T extends boolean = true> {
+  title?: T;
+  subtitle?: T;
+  features?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        icon?: T;
+        iconName?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "testimonials_select".
+ */
+export interface TestimonialsSelect<T extends boolean = true> {
+  title?: T;
+  subtitle?: T;
+  testimonials?:
+    | T
+    | {
+        name?: T;
+        position?: T;
+        company?: T;
+        testimonial?: T;
+        avatar?: T;
+        rating?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pricing_select".
+ */
+export interface PricingSelect<T extends boolean = true> {
+  title?: T;
+  subtitle?: T;
+  plans?:
+    | T
+    | {
+        name?: T;
+        price?: T;
+        period?: T;
+        description?: T;
+        features?:
+          | T
+          | {
+              feature?: T;
+              included?: T;
+              id?: T;
+            };
+        buttonText?: T;
+        buttonUrl?: T;
+        featured?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "faq_select".
+ */
+export interface FaqSelect<T extends boolean = true> {
+  title?: T;
+  subtitle?: T;
+  faqs?:
+    | T
+    | {
+        question?: T;
+        answer?: T;
         id?: T;
       };
   updatedAt?: T;
