@@ -5,6 +5,7 @@ import sharp from 'sharp' // sharp-import
 import path from 'path'
 import { buildConfig, PayloadRequest } from 'payload'
 import { fileURLToPath } from 'url'
+import { config } from '../config/env'
 
 import { Categories } from './collections/Categories'
 import { Media } from './collections/Media'
@@ -66,7 +67,7 @@ export default buildConfig({
   // This config helps us configure global or default features that the other editors can inherit
   editor: defaultLexical,
   db: mongooseAdapter({
-    url: process.env.DATABASE_URI || '',
+    url: config.DATABASE_URI,
   }),
   collections: [Pages, Posts, Media, Categories, Users],
   cors: [getServerSideURL()].filter(Boolean),
@@ -75,7 +76,7 @@ export default buildConfig({
     ...plugins,
     // s3Config,
   ],
-  secret: process.env.PAYLOAD_SECRET,
+  secret: config.PAYLOAD_SECRET,
   sharp,
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
@@ -90,7 +91,7 @@ export default buildConfig({
         // for the Vercel Cron secret to be present as an
         // Authorization header:
         const authHeader = req.headers.get('authorization')
-        return authHeader === `Bearer ${process.env.CRON_SECRET}`
+        return authHeader === `Bearer ${config.CRON_SECRET}`
       },
     },
     tasks: [],
